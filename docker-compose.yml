@@ -4,13 +4,14 @@ services:
     #image: nginx:1.15.12-alpine
     build:
       context: .
-      dockerfile: .srcs/services/nginx/Dockerfile
+      dockerfile: ./srcs/services/nginx/Dockerfile
+    #command: /bin/sh -c "while true; do sleep 60; done"
     restart: unless-stopped
     env_file: .env
     ports:
       - "8080:80"
     volumes:
-      - ./nginx:/etc/nginx/conf.d:rw
+      - ./nginx:/etc/nginx/http.d/:rw
       - wordpress:/var/www/html
     networks:
       - internal
