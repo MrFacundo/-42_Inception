@@ -1,13 +1,25 @@
 FROM alpine:3.20.0
 
-RUN apk update && apk add mariadb mariadb-client && rm -rf /var/cache/apk/*
+ENV DB_NAME \
+    DB_USER
 
-# Initialize the database
+RUN apk update && apk add  mariadb mariadb-client
+
+RUN mkdir /var/run/mysqld; \
+    chmod 777 /var/run/mysqld; \
+    { echo '[mysqld]'; \
+      echo 'skip-host-cache'; \
+      echo 'skip-name-resolve'; \
+      echo 'bind-address=0.0.0.0'; \
+    } | tee  /etc/my.cnf.d/docker.cnf; \
+    sed -i "s|skip-networking|skip-networking=0|g" \
+      /etc/my.cnf.d/mariadb-server.cnf
+
 RUN mysql_install_db --user=mysql --datadir=/var/lib/mysql
 
-# Copy the script
-COPY ./tools/test-db-connection.sh /test-db-connection.sh
-RUN chmod +x /test-db-connection.sh
+EXPOSE 3306
 
-# Start the MariaDB server and then run the script
-CMD sh -c 'mysqld_safe --datadir=/var/lib/mysql &' && sleep 5 && /test-db-connection.sh
+COPY srcs/services/mariadb/tools/create_db.sh .
+RUN sh create_db.sh && rm create_db.sh
+USER mysql
+CMD ["/usr/bin/mysqld", "--skip-log-error"]

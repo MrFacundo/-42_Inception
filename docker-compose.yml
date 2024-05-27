@@ -1,7 +1,6 @@
 services:
   nginx:
     container_name: nginx
-    #image: nginx:1.15.12-alpine
     build:
       context: .
       dockerfile: ./srcs/services/nginx/Dockerfile
@@ -18,14 +17,16 @@ services:
 
   database:
     container_name: database
-    image: mysql:8.0
-    restart: unless-stopped
-    env_file: .env
+    build:
+      context: .
+      dockerfile: ./srcs/services/mariadb/Dockerfile
     environment:
-      MYSQL_DATABASE: ${DATABASE_NAME}
-      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
-      MYSQL_USER: ${DATABASE_USER}
-      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+      - DB_NAME=wordpress
+      - DB_USER=user
+    secrets:
+      - db_user_password
+      - db_root_password
+    restart: unless-stopped
     ports:
       - "3306:3306"
     volumes:
@@ -69,5 +70,11 @@ volumes:
 networks:
   internal:
     driver: bridge
+
+secrets:
+  db_user_password:
+    file: ./root.txt
+  db_root_password:
+    file: ./user.txt
 
 # I2DalmhfhUQ&vkS4ca
