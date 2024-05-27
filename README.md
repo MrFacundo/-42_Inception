@@ -8,7 +8,7 @@
 
 ## Summary
 
-System adminsitration. Containerization. Docker. Networking. Scripting. 
+System administration. Containerization. Docker. Networking. Scripting. 
 
 ## Subject
 [📗️](en.subject.pdf) 

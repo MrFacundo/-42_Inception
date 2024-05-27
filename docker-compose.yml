@@ -1,0 +1,72 @@
+services:
+  nginx:
+    container_name: nginx
+    #image: nginx:1.15.12-alpine
+    build:
+      context: .
+      dockerfile: .srcs/services/nginx/Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d:rw
+      - wordpress:/var/www/html
+    networks:
+      - internal
+
+  database:
+    container_name: database
+    image: mysql:8.0
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - database_data:/var/lib/mysql
+    networks:
+      - internal
+
+  wordpress:
+    depends_on:
+      - database
+    container_name: wordpress
+    image: wordpress:6.5.2-fpm-alpine
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      WORDPRESS_DB_HOST: database:3306
+      WORDPRESS_DB_NAME: ${DATABASE_NAME}
+      WORDPRESS_DB_USER: ${DATABASE_USER}
+      WORDPRESS_DB_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - wordpress:/var/www/html
+    networks:
+      - internal
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+    ports:
+      - "8081:80"
+    networks:
+      - internal
+
+volumes:
+  database_data:
+  wordpress:
+
+networks:
+  internal:
+    driver: bridge
+
+# I2DalmhfhUQ&vkS4ca
