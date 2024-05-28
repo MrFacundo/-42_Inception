@@ -19,7 +19,7 @@ RUN mysql_install_db --user=mysql --datadir=/var/lib/mysql
 
 EXPOSE 3306
 
-COPY srcs/services/mariadb/tools/create_db.sh .
-RUN sh create_db.sh && rm create_db.sh
+COPY ./services/mariadb/tools/create_db.sh .
+
 USER mysql
-CMD ["/usr/bin/mysqld", "--skip-log-error"]
+CMD ["/bin/sh", "-c", "sh create_db.sh && /usr/bin/mysqld --skip-log-error"]
