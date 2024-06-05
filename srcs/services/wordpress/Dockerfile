@@ -1,11 +1,43 @@
 FROM alpine:3.20.0
 
-RUN apk update && apk add lighttpd php82 fcgi php82-cgi
+ENV DB_NAME \
+  DB_USER \
+  DB_PASS \
+  DB_HOST
 
-COPY ./tools/lighttpd.conf /etc/lighttpd/lighttpd.conf
+ARG PHPVERSION
 
-COPY ./tools/mod_fastcgi.conf /etc/lighttpd/mod_fastcgi.conf
-
-EXPOSE 80
-
-CMD ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd2.conf"]
+RUN apk update && apk upgrade && apk add \
+  php${PHPVERSION} \
+  php${PHPVERSION}-fpm \
+  php${PHPVERSION}-mysqli \
+  php${PHPVERSION}-json \
+  php${PHPVERSION}-curl \
+  php${PHPVERSION}-dom \
+  php${PHPVERSION}-exif \
+  php${PHPVERSION}-fileinfo \
+  php${PHPVERSION}-mbstring \
+  php${PHPVERSION}-openssl \
+  php${PHPVERSION}-xml \
+  php${PHPVERSION}-zip \
+  php${PHPVERSION}-redis \
+  wget \
+  unzip && \
+  sed -i "s|listen = 127.0.0.1:9000|listen = 9000|g" \
+  /etc/php${PHPVERSION}/php-fpm.d/www.conf && \
+  sed -i "s|;listen.owner = nobody|listen.owner = nobody|g" \
+  /etc/php${PHPVERSION}/php-fpm.d/www.conf && \
+  sed -i "s|;listen.group = nobody|listen.group = nobody|g" \
+  /etc/php${PHPVERSION}/php-fpm.d/www.conf && \
+  echo "env[DB_NAME] = \$DB_NAME" >> /etc/php${PHPVERSION}/php-fpm.d/www.conf && \
+  echo "env[DB_USER] = \$DB_USER" >> /etc/php${PHPVERSION}/php-fpm.d/www.conf && \
+  echo "env[DB_PASS] = \$DB_PASS" >> /etc/php${PHPVERSION}/php-fpm.d/www.conf && \
+  echo "env[DB_HOST] = \$DB_HOST" >> /etc/php${PHPVERSION}/php-fpm.d/www.conf && \
+  rm -f /var/cache/apk/*
+WORKDIR /var/www
+RUN chown -R nobody:nobody /var/www
+RUN wget https://wordpress.org/latest.zip && \
+  unzip latest.zip && \
+  cp -rf wordpress/* . && \
+  rm -rf wordpress latest.zip
+CMD /usr/sbin/php-fpm${PHPVERSION} -F
