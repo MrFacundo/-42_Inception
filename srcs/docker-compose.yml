@@ -47,23 +47,29 @@ services:
       dockerfile: ./services/wordpress/Dockerfile
       args:
         PHPVERSION: 82
+        DB_NAME: ${DB_NAME}
+        DB_USER: ${DB_USER}
+        DB_PASS: ${DB_PASS}
+        DB_HOST: ${DB_HOST}
     restart: unless-stopped
     env_file: .env
     secrets:
       - db_user_password
       - db_username
-    environment:
-      DB_HOST: mariadb:3306
     volumes:
       - wordpress:/var/www/
-      - ./services/wordpress/config/wp-config.php:/var/www/wp-config.php
+      #- ./services/wordpress/config/wp-config.php:/var/www/wp-config.php
     networks:
       - internal
 
 volumes:
   database_data:
   wordpress:
-  wp-config:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: /home/facu/data
 
 networks:
   internal:

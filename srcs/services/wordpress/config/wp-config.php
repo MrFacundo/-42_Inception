@@ -13,10 +13,12 @@ define( 'DB_NAME', getenv('DB_NAME') );
 define( 'DB_HOST',  getenv('DB_HOST') );
 
 $debug_file = '/var/www/wp-content/debug.txt';
-file_put_contents($debug_file, "DB_NAME: " . getenv('DB_NAME') . "\n", FILE_APPEND);
-file_put_contents($debug_file, "DB_USER: " . getenv('DB_USER') . "\n", FILE_APPEND);
-file_put_contents($debug_file, "DB_PASSWORD: " . getenv('DB_PASS') . "\n", FILE_APPEND);
-file_put_contents($debug_file, "DB_HOST: " . getenv('DB_HOST') . "\n", FILE_APPEND);
+
+file_put_contents($debug_file, "DB_USER: " . DB_USER . "\n", FILE_APPEND);
+file_put_contents($debug_file, "DB_PASSWORD: " . DB_PASSWORD . "\n", FILE_APPEND);
+file_put_contents($debug_file, "DB_NAME: " . DB_NAME . "\n", FILE_APPEND);
+file_put_contents($debug_file, "DB_HOST: " . DB_HOST . "\n", FILE_APPEND);
+
 define( 'DB_CHARSET', 'utf8' );
 define( 'DB_COLLATE', '' );
 define('FS_METHOD','direct');
