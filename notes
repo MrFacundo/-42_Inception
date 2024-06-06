@@ -1,0 +1,9 @@
+openssl s_client -connect localhost:443
+
+This command will output a lot of information about the certificate. Look for the "Protocol" line in the output to see the version of TLS used by the certificate.
+
+-----------
+
+Update your /etc/hosts file to map login.42.fr to your localhost IP address. This can be done by adding the following line to your /etc/hosts file:
+
+127.0.0.1 login.42.fr

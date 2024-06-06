@@ -5,10 +5,13 @@ define( 'WP_DEBUG', true );
 define( 'WP_DEBUG_LOG', true );
 define( 'WP_DEBUG_DISPLAY', false );
 @ini_set( 'display_errors', 0 );
+
+define( 'DB_USER', file_get_contents('/run/secrets/db_username') );
+define( 'DB_PASSWORD', file_get_contents('/run/secrets/db_user_password') );
+
 define( 'DB_NAME', getenv('DB_NAME') );
-define( 'DB_USER', getenv('DB_USER') );
-define( 'DB_PASSWORD', getenv('DB_PASS') );
 define( 'DB_HOST',  getenv('DB_HOST') );
+
 $debug_file = '/var/www/wp-content/debug.txt';
 file_put_contents($debug_file, "DB_NAME: " . getenv('DB_NAME') . "\n", FILE_APPEND);
 file_put_contents($debug_file, "DB_USER: " . getenv('DB_USER') . "\n", FILE_APPEND);

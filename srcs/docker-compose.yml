@@ -1,5 +1,6 @@
 services:
   nginx:
+    image: nginx
     container_name: nginx
     depends_on:
       - wordpress
@@ -8,24 +9,23 @@ services:
       dockerfile: ./services/nginx/Dockerfile
     #command: /bin/sh -c "while true; do sleep 60; done"
     restart: unless-stopped
-    env_file: .env
     ports:
-      - "8080:80"
+      - "443:443"
+    extra_hosts:
+      - "login.42.fr:127.0.0.1"
     volumes:
       - ./services/nginx/config:/etc/nginx/http.d/:rw
       - wordpress:/var/www/
     networks:
       - internal
 
-  database:
-    container_name: database
+  mariadb:
+    image: mariadb
+    container_name: mariadb
     build:
       context: .
       dockerfile: ./services/mariadb/Dockerfile
     env_file: .env
-    environment:
-      DB_NAME: ${DATABASE_NAME}
-      DB_USER: ${DATABASE_USER}
     secrets:
       - db_user_password
       - db_root_password
@@ -38,10 +38,10 @@ services:
       - internal
 
   wordpress:
-    depends_on:
-      - database
+    image: wordpress
     container_name: wordpress
-    #image: wordpress:6.5.2-fpm-alpine
+    depends_on:
+      - mariadb
     build: 
       context: .
       dockerfile: ./services/wordpress/Dockerfile
@@ -49,28 +49,16 @@ services:
         PHPVERSION: 82
     restart: unless-stopped
     env_file: .env
+    secrets:
+      - db_user_password
+      - db_username
     environment:
-      DB_HOST: database:3306
-      DB_NAME: ${DATABASE_NAME}
-      DB_USER: ${DATABASE_USER}
-      DB_PASS: ${DATABASE_PASSWORD}
+      DB_HOST: mariadb:3306
     volumes:
       - wordpress:/var/www/
       - ./services/wordpress/config/wp-config.php:/var/www/wp-config.php
     networks:
       - internal
-
-#  phpmyadmin:
-#    container_name: phpmyadmin
-#    image: phpmyadmin/phpmyadmin
-#    environment:
-#      PMA_HOST: database
-#      PMA_PORT: 3306
-#      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
-#    ports:
-#      - "8081:80"
-#    networks:
-#      - internal
 
 volumes:
   database_data:
@@ -79,12 +67,13 @@ volumes:
 
 networks:
   internal:
+    name: internal
     driver: bridge
 
 secrets:
   db_user_password:
-    file: ../secrets/user.txt
+    file: ../secrets/user_password.txt
   db_root_password:
-    file: ../secrets/root.txt
-
-# I2DalmhfhUQ&vkS4ca
+    file: ../secrets/root_password.txt
+  db_username:
+    file: ../secrets/username.txt

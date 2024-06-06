@@ -1,8 +1,5 @@
 FROM alpine:3.20.0
 
-ENV DB_NAME \
-    DB_USER
-
 RUN apk update && apk add  mariadb mariadb-client
 
 RUN mkdir /var/run/mysqld; \

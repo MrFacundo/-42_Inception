@@ -1,10 +1,5 @@
 FROM alpine:3.20.0
 
-ENV DB_NAME \
-  DB_USER \
-  DB_PASS \
-  DB_HOST
-
 ARG PHPVERSION
 
 RUN apk update && apk upgrade && apk add \
@@ -30,8 +25,6 @@ RUN apk update && apk upgrade && apk add \
   sed -i "s|;listen.group = nobody|listen.group = nobody|g" \
   /etc/php${PHPVERSION}/php-fpm.d/www.conf && \
   echo "env[DB_NAME] = \$DB_NAME" >> /etc/php${PHPVERSION}/php-fpm.d/www.conf && \
-  echo "env[DB_USER] = \$DB_USER" >> /etc/php${PHPVERSION}/php-fpm.d/www.conf && \
-  echo "env[DB_PASS] = \$DB_PASS" >> /etc/php${PHPVERSION}/php-fpm.d/www.conf && \
   echo "env[DB_HOST] = \$DB_HOST" >> /etc/php${PHPVERSION}/php-fpm.d/www.conf && \
   rm -f /var/cache/apk/*
 WORKDIR /var/www
@@ -40,4 +33,5 @@ RUN wget https://wordpress.org/latest.zip && \
   unzip latest.zip && \
   cp -rf wordpress/* . && \
   rm -rf wordpress latest.zip
-CMD /usr/sbin/php-fpm${PHPVERSION} -F
+CMD ["/usr/sbin/php-fpm82", "-F"]
+
