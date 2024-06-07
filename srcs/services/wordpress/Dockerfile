@@ -1,10 +1,6 @@
 FROM alpine:3.20.0
 
-ARG PHPVERSION \
-    DB_NAME \
-    DB_USER \
-    DB_PASS \
-    DB_HOST
+ARG PHPVERSION
 
 RUN apk update && apk upgrade && apk add \
   php${PHPVERSION} \
@@ -37,18 +33,16 @@ RUN sed -i "s|listen = 127.0.0.1:9000|listen = 9000|g" \
   /etc/php${PHPVERSION}/php-fpm.d/www.conf && \
   sed -i "s|;listen.group = nobody|listen.group = nobody|g" \
   /etc/php${PHPVERSION}/php-fpm.d/www.conf && \
-  echo "env[DB_NAME] = \$DB_NAME" >> /etc/php${PHPVERSION}/php-fpm.d/www.conf && \
-  echo "env[DB_HOST] = \$DB_HOST" >> /etc/php${PHPVERSION}/php-fpm.d/www.conf && \
   rm -f /var/cache/apk/*
 
 WORKDIR /var/www
 RUN chown -R nobody:nobody /var/www
 
 COPY ./services/wordpress/tools/wait-for-mariadb.sh /wait-for-mariadb.sh
-RUN chmod +x /wait-for-mariadb.sh
+COPY ./services/wordpress/tools/entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /wait-for-mariadb.sh /entrypoint.sh
 
 RUN wp core download --allow-root
 
-CMD /wait-for-mariadb.sh mariadb:3306 wp core config --allow-root --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASS --dbhost=$DB_HOST && \
-  wp core install --allow-root --url="login.42.fr" --title="login Inception Site" --admin_user="login" --admin_password="password" --admin_email="login@42.fr" && \
-  /usr/sbin/php-fpm82 -F
+CMD ["/entrypoint.sh"]

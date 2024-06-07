@@ -12,4 +12,14 @@ re: down build up
 clean:
 	docker system prune -a --volumes
 
-.PHONY: build up down re clean
+create_dirs:
+	mkdir -p ~/data/wordpress
+	mkdir -p ~/data/database_data
+
+delete_data:
+	rm -rf ~/data
+
+fclean: delete_data
+	docker stop $$(docker ps -qa); docker rm $$(docker ps -qa); docker rmi -f $$(docker images -qa); docker volume rm $$(docker volume ls -q); docker network rm $$(docker network ls -q) 2>/dev/null
+
+.PHONY: build up down re clean fclean create_dirs delete_data

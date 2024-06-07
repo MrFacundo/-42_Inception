@@ -7,12 +7,11 @@ services:
     build:
       context: .
       dockerfile: ./services/nginx/Dockerfile
-    #command: /bin/sh -c "while true; do sleep 60; done"
     restart: unless-stopped
     ports:
       - "443:443"
     extra_hosts:
-      - "login.42.fr:127.0.0.1"
+      - "ftroiter.42.pt:127.0.0.1"
     volumes:
       - ./services/nginx/config:/etc/nginx/http.d/:rw
       - wordpress:/var/www/
@@ -30,8 +29,6 @@ services:
       - db_user_password
       - db_root_password
     restart: unless-stopped
-    ports:
-      - "3306:3306"
     volumes:
       - database_data:/var/lib/mysql
     networks:
@@ -58,18 +55,22 @@ services:
       - db_username
     volumes:
       - wordpress:/var/www/
-      #- ./services/wordpress/config/wp-config.php:/var/www/wp-config.php
     networks:
       - internal
 
 volumes:
   database_data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: /home/facu/data/database_data
   wordpress:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: /home/facu/data
+      device: /home/facu/data/wordpress
 
 networks:
   internal:

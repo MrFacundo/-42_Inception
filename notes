@@ -7,3 +7,33 @@ This command will output a lot of information about the certificate. Look for th
 Update your /etc/hosts file to map login.42.fr to your localhost IP address. This can be done by adding the following line to your /etc/hosts file:
 
 127.0.0.1 login.42.fr
+
+
+------------
+
+Mariadb
+
+docker exec -it mariadb mysql
+
+	SHOW DATABASES;
+	USE wordpress;
+	SHOW TABLES;
+
+	SELECT User, Host FROM mysql.user;
+
+
+------------
+
+EVAL
+
+The evaluated person has to explain to you in simple terms:
+
+    How Docker and docker compose work
+    The difference between a Docker image used with docker compose and without docker compose
+    The benefit of Docker compared to VMs
+    The pertinence of the directory structure required for this project (an example is provided in the subject's PDF file)
+
+
+The evaluated student has to give you a simple explanation of docker-network. If any of the above points is not correct, the evaluation process ends now.
+
+The evaluated student must be able to explain you how to login into the database. Verify that the database is not empty. If any of the above points is not correct, the evaluation process ends now.
