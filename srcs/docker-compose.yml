@@ -58,6 +58,22 @@ services:
     networks:
       - internal
 
+  adminer:
+    image: adminer
+    container_name: adminer
+    depends_on:
+      - mariadb
+    build:
+      context: .
+      dockerfile: ./services/bonus/adminer/Dockerfile
+      args:
+        PHPVERSION: 82
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    networks:
+      - internal
+
 volumes:
   database_data:
     driver: local
