@@ -4,9 +4,7 @@ services:
     container_name: nginx
     depends_on:
       - wordpress
-    build:
-      context: .
-      dockerfile: ./services/nginx/Dockerfile
+    build: ./services/nginx/
     restart: unless-stopped
     ports:
       - "443:443"
@@ -44,10 +42,6 @@ services:
       dockerfile: ./services/wordpress/Dockerfile
       args:
         PHPVERSION: 82
-        DB_NAME: ${DB_NAME}
-        DB_USER: ${DB_USER}
-        DB_PASS: ${DB_PASS}
-        DB_HOST: ${DB_HOST}
     restart: unless-stopped
     env_file: .env
     secrets:
@@ -74,6 +68,18 @@ services:
     networks:
       - internal
 
+  redis:
+    image: redis
+    container_name: redis
+    build:
+      context: .
+      dockerfile: ./services/bonus/redis/Dockerfile
+    ports:
+      - 6379:6379
+    restart: unless-stopped
+    networks:
+      - internal
+  
 volumes:
   database_data:
     driver: local

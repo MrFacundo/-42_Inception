@@ -16,7 +16,9 @@ RUN apk update && apk upgrade && apk add \
   php${PHPVERSION}-xml \
   php${PHPVERSION}-zip \
   php${PHPVERSION}-redis \
-  php${PHPVERSION}-phar \ 
+  php${PHPVERSION}-phar \
+  php${PHPVERSION}-tokenizer \
+  php${PHPVERSION}-ctype \ 
   wget \
   unzip \
   curl
