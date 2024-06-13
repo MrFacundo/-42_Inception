@@ -1,17 +1,20 @@
+SSL/TSL
+
 openssl s_client -connect localhost:443
 
 This command will output a lot of information about the certificate. Look for the "Protocol" line in the output to see the version of TLS used by the certificate.
 
 -----------
 
+HOSTS
+
 Update your /etc/hosts file to map login.42.fr to your localhost IP address. This can be done by adding the following line to your /etc/hosts file:
 
 127.0.0.1 login.42.fr
 
-
 ------------
 
-Mariadb
+MARIADB
 
 docker exec -it mariadb mysql
 
@@ -21,8 +24,30 @@ docker exec -it mariadb mysql
 
 	SELECT User, Host FROM mysql.user;
 
-
 ------------
+
+FTP
+
+A ftp client must be installed on host machine to connect to the ftp server. Then
+
+❯ ftp -p localhost 21
+Connected to localhost.
+220 Welcome to FTP server of inception!
+Name (localhost:facu): ftroiter
+331 Please specify the password.
+Password: 
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> ls
+229 Entering Extended Passive Mode (|||21006|)
+150 Here comes the directory listing.
+-rw-r--r--    1 0        0             405 Jun 13 13:45 index.php
+...
+226 Directory send OK.
+ftp> get index.php
+
+---------------
 
 EVAL
 

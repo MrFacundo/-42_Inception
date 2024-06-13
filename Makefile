@@ -2,7 +2,7 @@ build:
 	docker-compose -f srcs/docker-compose.yml build
 
 up:
-	docker-compose -f srcs/docker-compose.yml up -d
+	docker-compose -f srcs/docker-compose.yml up
 
 down:
 	docker-compose -f srcs/docker-compose.yml down
@@ -15,9 +15,10 @@ clean:
 create_dirs:
 	mkdir -p ~/data/wordpress
 	mkdir -p ~/data/database_data
+	mkdir -p ~/data/jekyll
 
 delete_data:
-	rm -rf ~/data
+	sudo rm -rf ~/data
 
 fclean: delete_data
 	docker stop $$(docker ps -qa); docker rm $$(docker ps -qa); docker rmi -f $$(docker images -qa); docker volume rm $$(docker volume ls -q); docker network rm $$(docker network ls -q) 2>/dev/null

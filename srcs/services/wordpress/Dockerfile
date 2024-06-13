@@ -40,8 +40,8 @@ RUN sed -i "s|listen = 127.0.0.1:9000|listen = 9000|g" \
 WORKDIR /var/www
 RUN chown -R nobody:nobody /var/www
 
-COPY ./services/wordpress/tools/wait-for-mariadb.sh /wait-for-mariadb.sh
-COPY ./services/wordpress/tools/entrypoint.sh /entrypoint.sh
+COPY ./tools/wait-for-mariadb.sh /wait-for-mariadb.sh
+COPY ./tools/entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /wait-for-mariadb.sh /entrypoint.sh
 

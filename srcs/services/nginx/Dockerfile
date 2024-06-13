@@ -8,6 +8,8 @@ RUN apk update && apk add nginx openssl \
 		-out /etc/nginx/ssl/nginx.crt \
 		-subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com"
 
+COPY ./config/default.conf /etc/nginx/http.d/default.conf
+
 EXPOSE 443
 
 CMD ["nginx", "-g", "daemon off;"]

@@ -1,6 +1,6 @@
 FROM alpine:3.20.0
 
-RUN apk update && apk add  mariadb mariadb-client
+RUN apk update && apk add mariadb mariadb-client
 
 RUN mkdir /var/run/mysqld; \
     chmod 777 /var/run/mysqld; \
@@ -16,7 +16,10 @@ RUN mysql_install_db --user=mysql --datadir=/var/lib/mysql
 
 EXPOSE 3306
 
-COPY ./services/mariadb/tools/create_db.sh .
+COPY ./tools/create_db.sh .
+
+RUN chmod +x /create_db.sh
 
 USER mysql
-CMD ["/bin/sh", "-c", "sh create_db.sh && /usr/bin/mysqld --skip-log-error"]
+
+CMD /bin/sh -c "/create_db.sh && /usr/bin/mysqld"

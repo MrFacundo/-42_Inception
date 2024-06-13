@@ -1,6 +1,6 @@
 <?php
 // router.php
-if ($_SERVER['REQUEST_URI'] == '/adminer') {
+if (preg_match('/^\/adminer/', $_SERVER['REQUEST_URI'])) {
 	include_once 'adminer.php';
 } else {
 	return false;

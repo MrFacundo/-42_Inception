@@ -4,14 +4,11 @@ services:
     container_name: nginx
     depends_on:
       - wordpress
-    build: ./services/nginx/
+    build: ./services/nginx
     restart: unless-stopped
     ports:
       - "443:443"
-    extra_hosts:
-      - "ftroiter.42.pt:127.0.0.1"
     volumes:
-      - ./services/nginx/config:/etc/nginx/http.d/:rw
       - wordpress:/var/www/
     networks:
       - internal
@@ -19,9 +16,7 @@ services:
   mariadb:
     image: mariadb
     container_name: mariadb
-    build:
-      context: .
-      dockerfile: ./services/mariadb/Dockerfile
+    build: ./services/mariadb
     env_file: .env
     secrets:
       - db_user_password
@@ -38,20 +33,29 @@ services:
     depends_on:
       - mariadb
     build: 
-      context: .
-      dockerfile: ./services/wordpress/Dockerfile
+      context: ./services/wordpress
       args:
         PHPVERSION: 82
     restart: unless-stopped
     env_file: .env
-    secrets:
-      - db_user_password
-      - db_username
     volumes:
       - wordpress:/var/www/
     networks:
       - internal
+    secrets:
+      - db_user_password
+      - db_username
 
+  redis:
+    image: redis
+    container_name: redis
+    build: ./services/bonus/redis
+    ports:
+      - 6379:6379
+    restart: unless-stopped
+    networks:
+      - internal
+  
   adminer:
     image: adminer
     container_name: adminer
@@ -68,18 +72,34 @@ services:
     networks:
       - internal
 
-  redis:
-    image: redis
-    container_name: redis
-    build:
-      context: .
-      dockerfile: ./services/bonus/redis/Dockerfile
+  vsftpd:
+    image: vsftpd
+    container_name: vsftpd
+    build: ./services/bonus/vsftpd
     ports:
-      - 6379:6379
+      - 21:21
+      - 21000-21010:21000-21010
+    volumes:
+      - wordpress:/var/www/
     restart: unless-stopped
     networks:
       - internal
-  
+    secrets:
+      - ftp_username
+      - ftp_password
+
+  jekyll:
+    image: jekyll/jekyll
+    container_name: jekyll
+    build: ./services/bonus/jekyll
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    volumes:
+      - jekyll:/var/www/jekyll
+    networks:
+      - internal
+
 volumes:
   database_data:
     driver: local
@@ -93,6 +113,12 @@ volumes:
       type: 'none'
       o: 'bind'
       device: /home/facu/data/wordpress
+  jekyll:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: /home/facu/data/jekyll
 
 networks:
   internal:
@@ -106,3 +132,7 @@ secrets:
     file: ../secrets/root_password.txt
   db_username:
     file: ../secrets/username.txt
+  ftp_username:
+    file: ../secrets/ftp_username.txt
+  ftp_password:
+    file: ../secrets/ftp_password.txt

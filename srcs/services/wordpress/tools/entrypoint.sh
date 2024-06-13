@@ -25,6 +25,8 @@ fi
 
 if ! $(wp user get $WP_USER --field=user_login --allow-root | grep -q "^$WP_USER$"); then 
 	wp user create $WP_USER $WP_USER_EMAIL --role=author --user_pass=$WP_USER_PASS --allow-root
+else
+	echo "User $WP_USER already exists."
 fi
 
 if ! $(wp plugin is-installed redis-cache --allow-root); then
