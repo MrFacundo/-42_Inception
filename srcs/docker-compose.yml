@@ -106,19 +106,19 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: /home/facu/data/database_data
+      device: ${HOME}/data/database_data
   wordpress:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: /home/facu/data/wordpress
+      device: ${HOME}/data/wordpress
   jekyll:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: /home/facu/data/jekyll
+      device: ${HOME}/data/jekyll
 
 networks:
   internal:

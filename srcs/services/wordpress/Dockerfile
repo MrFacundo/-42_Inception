@@ -1,4 +1,4 @@
-FROM alpine:3.20.0
+FROM alpine:3.19.1
 
 ARG PHPVERSION
 
@@ -21,9 +21,10 @@ RUN apk update && apk upgrade && apk add \
   php${PHPVERSION}-ctype \ 
   wget \
   unzip \
-  curl
+  curl \
+  rm -f /var/cache/apk/*
 
-RUN ln -s /usr/bin/php${PHPVERSION} /usr/bin/php
+RUN ln -sf /usr/bin/php${PHPVERSION} /usr/bin/php
 
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
   chmod +x wp-cli.phar && \
@@ -34,8 +35,7 @@ RUN sed -i "s|listen = 127.0.0.1:9000|listen = 9000|g" \
   sed -i "s|;listen.owner = nobody|listen.owner = nobody|g" \
   /etc/php${PHPVERSION}/php-fpm.d/www.conf && \
   sed -i "s|;listen.group = nobody|listen.group = nobody|g" \
-  /etc/php${PHPVERSION}/php-fpm.d/www.conf && \
-  rm -f /var/cache/apk/*
+  /etc/php${PHPVERSION}/php-fpm.d/www.conf
 
 WORKDIR /var/www
 RUN chown -R nobody:nobody /var/www

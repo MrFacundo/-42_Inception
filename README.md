@@ -8,8 +8,7 @@
 
 ## Summary
 
-System administration. Containerization. Docker. Networking. Scripting.
-
+System administration. Containerization. Service orquestration and networking.
 
 Required services:
 
@@ -26,10 +25,10 @@ Bonus services:
   
 Required specifications:
 
-- [x] All images must be built using Alpine Linux or Debian
-- [x] Persistent data
-- [x] TLS
-- [x] Docker Network
+- [x] All images must be manually built. Ready-made images are forbidden except Alpine Linux and Debian
+- [x] Persistent data through volumes
+- [x] Service orchestration with Docker Compose
+- [x] SSL certificates
 
 
 ## Subject
