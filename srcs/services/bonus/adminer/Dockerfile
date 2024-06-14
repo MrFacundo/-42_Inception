@@ -13,4 +13,9 @@ COPY ./services/bonus/adminer/router.php /router.php
 
 EXPOSE 8080
 
+RUN addgroup -g 1000 nonroot && \
+    adduser -u 1000 -G nonroot -s /bin/sh -D nonroot
+
+USER nonroot
+
 CMD ["php82", "-S", "0.0.0.0:8080", "-t", "/", "router.php"]

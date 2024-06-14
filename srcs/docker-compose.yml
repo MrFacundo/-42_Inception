@@ -102,19 +102,16 @@ services:
 
 volumes:
   database_data:
-    driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
       device: ${HOME}/data/database_data
   wordpress:
-    driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
       device: ${HOME}/data/wordpress
   jekyll:
-    driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
