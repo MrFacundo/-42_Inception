@@ -16,6 +16,8 @@ EXPOSE 8080
 RUN addgroup -g 1000 nonroot && \
     adduser -u 1000 -G nonroot -s /bin/sh -D nonroot
 
+RUN chown nonroot:nonroot /adminer.php /router.php
+
 USER nonroot
 
 CMD ["php82", "-S", "0.0.0.0:8080", "-t", "/", "router.php"]
