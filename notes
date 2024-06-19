@@ -80,5 +80,132 @@ docker container attach container-a
 	ifconfig
 	ping (container-b ip address)
 
+------------
+
+TODO
+
+nginx 
+	one conf per website
+	in /var/conf.d-> websitename.conf
+	
+server {
+	listen 80 default_server;
+	root /var/www/websitename
+
+acess_log /var/log/nginx/websitename.access.log
+				.error.log
+}
+
+nginx-t to test config
+
+conf location
+
+# Copy the binaryville NGINX configuration into the container as
+# the default configuration.
+COPY ./config/binaryville.conf /etc/nginx/conf.d/default.conf
+
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    depends_on:
+      - mariadb
+    build:
+      context: .
+      dockerfile: ./services/bonus/adminer/Dockerfile
+      args:
+        PHPVERSION: 82
+    ports:
+      - 8080:8080 port mapping is useless because adminer is being accesed from host container, same with redis and ftp and jekyll
+    restart: unless-stopped
+    networks:
+      - internal
+
+
+
+jekyll setup
+
+upstream app_server_7001 {
+    server 127.0.0.1:7001;
+}
+
+server {
+    listen 80;
+    root /var/www/binaryville;
+
+    server_name binaryville.local www.binaryville.local;
+    index index.html index.htm index.php;
+
+    access_log /var/log/nginx/binaryville.local.access.log;
+    error_log /var/log/nginx/binaryville.local.error.log;
+
+    location / {
+        # First attempt to serve a request as file, then
+        # as directory, then fall back to displaying a 404.
+        try_files $uri $uri/ =404;
+    }
+
+    location /images {
+        # Allow the contents of the /image folder to be listed
+        autoindex on;
+
+        access_log /var/log/nginx/binaryville.local.images.access.log;
+        error_log /var/log/nginx/binaryville.local.images.error.log;
+    }
+
+    # specify the page to serve for 404 errors
+    error_page 404 /404.html;
+
+    # an exact match location for the 404 page
+    location = /404.html {
+        # only use this location for internal requests
+        internal;
+    }
+
+    # specify the page to serve for 500 errors
+    error_page 500 502 503 504 /50x.html;
+
+    # an exact match location for the 50x page
+    location = /50x.html {
+        # only use this location for internal requests
+        internal;
+    }
+
+    # a location to demonstrate 500 errors
+    location /500 {
+        fastcgi_pass unix:/this/will/fail;
+    }
+
+    # a location to proxy requests to the upstream named 'app_server_7001'
+    location /proxy {
+        # Trailing slash is key!
+        proxy_pass http://app_server_7001/;
+include /etc/nginx/proxy_params;???
+
+        # Logging for access to the proxy
+        access_log /var/log/nginx/binaryville.local.proxy.access.log;
+        error_log /var/log/nginx/binaryville.local.proxy.error.log;
+    }
+}
+
+
+fix 
+
+volumes:
+  database_data:
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ${HOME}/data/database_data
+  wordpress:
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ${HOME}/data/wordpress
+  jekyll:
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ${HOME}/data/jekyll
 
 
