@@ -9,7 +9,7 @@ services:
     ports:
       - "443:443"
     volumes:
-      - wordpress:/var/www/
+      - wordpress:/var/www/wordpress
     networks:
       - internal
 
@@ -39,7 +39,7 @@ services:
     restart: unless-stopped
     env_file: .env
     volumes:
-      - wordpress:/var/www/
+      - wordpress:/var/www/wordpress
     networks:
       - internal
     secrets:
@@ -98,17 +98,17 @@ volumes:
   database_data:
     driver_opts:
       type: 'none'
-      o: 'volume'
+      o: 'bind'
       device: ${HOME}/data/database_data
   wordpress:
     driver_opts:
       type: 'none'
-      o: 'volume'
+      o: 'bind'
       device: ${HOME}/data/wordpress
   jekyll:
     driver_opts:
       type: 'none'
-      o: 'volume'
+      o: 'bind'
       device: ${HOME}/data/jekyll
 
 networks:

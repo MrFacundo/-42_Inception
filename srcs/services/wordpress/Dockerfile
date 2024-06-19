@@ -37,8 +37,9 @@ RUN sed -i "s|listen = 127.0.0.1:9000|listen = 9000|g" \
   sed -i "s|;listen.group = nobody|listen.group = nobody|g" \
   /etc/php${PHPVERSION}/php-fpm.d/www.conf
 
-WORKDIR /var/www
-RUN chown -R nobody:nobody /var/www
+WORKDIR /var/www/wordpress
+
+RUN chown -R nobody:nobody /var/www/wordpress
 
 COPY ./tools/wait-for-mariadb.sh /wait-for-mariadb.sh
 COPY ./tools/entrypoint.sh /entrypoint.sh

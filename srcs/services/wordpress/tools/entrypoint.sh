@@ -17,7 +17,7 @@ wp config set WP_DEBUG true --raw --allow-root
 wp config set WP_DEBUG_LOG true --raw --allow-root
 wp config set WP_DEBUG_DISPLAY true --raw --allow-root
 
-chown -R nobody:nobody /var/www/wp-content
+chown -R nobody:nobody /var/www/wordpress/wp-content
 
 if ! $(wp core is-installed --allow-root); then 
 	wp core install --allow-root --url=$WP_URL --title="$WP_TITLE" --admin_user=$WP_ADMIN --admin_password=$WP_ADMIN_PASS --admin_email=$WP_ADMIN_EMAIL
