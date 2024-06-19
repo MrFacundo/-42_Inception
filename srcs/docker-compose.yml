@@ -50,8 +50,6 @@ services:
     image: redis
     container_name: redis
     build: ./services/bonus/redis
-    ports:
-      - 6379:6379
     restart: unless-stopped
     networks:
       - internal
@@ -66,8 +64,6 @@ services:
       dockerfile: ./services/bonus/adminer/Dockerfile
       args:
         PHPVERSION: 82
-    ports:
-      - 8080:8080
     restart: unless-stopped
     networks:
       - internal
@@ -93,8 +89,6 @@ services:
     container_name: jekyll
     build: ./services/bonus/jekyll
     restart: unless-stopped
-    ports:
-      - 3000:3000
     volumes:
       - jekyll:/var/www/jekyll
     networks:
@@ -104,17 +98,17 @@ volumes:
   database_data:
     driver_opts:
       type: 'none'
-      o: 'bind'
+      o: 'volume'
       device: ${HOME}/data/database_data
   wordpress:
     driver_opts:
       type: 'none'
-      o: 'bind'
+      o: 'volume'
       device: ${HOME}/data/wordpress
   jekyll:
     driver_opts:
       type: 'none'
-      o: 'bind'
+      o: 'volume'
       device: ${HOME}/data/jekyll
 
 networks:
