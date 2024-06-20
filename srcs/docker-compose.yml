@@ -10,6 +10,7 @@ services:
       - "443:443"
     volumes:
       - wordpress:/var/www/wordpress
+      - ./services/nginx/config:/etc/nginx/http.d
     networks:
       - internal
 

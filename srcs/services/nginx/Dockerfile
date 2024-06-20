@@ -8,9 +8,6 @@ RUN apk update && apk add nginx openssl \
 		-out /etc/nginx/ssl/nginx.crt \
 		-subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com"
 
-COPY ./config/jekyll.conf /etc/nginx/http.d/jekyll.conf
-COPY ./config/wordpress.conf /etc/nginx/http.d/wordpress.conf
-
 EXPOSE 443
 
 CMD ["nginx", "-g", "daemon off;"]
